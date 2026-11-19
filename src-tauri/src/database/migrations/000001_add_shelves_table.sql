@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS shelves (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+    modified_at INTEGER DEFAULT NULL
+);
