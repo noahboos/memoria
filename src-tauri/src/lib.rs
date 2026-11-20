@@ -3,6 +3,7 @@ use tauri::{App, Manager};
 use crate::database::Database;
 
 mod database;
+mod models;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
