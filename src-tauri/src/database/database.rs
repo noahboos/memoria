@@ -48,7 +48,7 @@ impl Database {
         for version in VERSIONS {
             if version.version > _version {
                 for migration in version.migrations {
-                    transaction.execute_batch(migration.request)?;
+                    transaction.execute_batch(migration.statements)?;
                 }
 
                 transaction.pragma_update(None, "user_version", version.version)?;
