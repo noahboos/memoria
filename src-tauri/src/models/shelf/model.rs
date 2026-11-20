@@ -1,6 +1,7 @@
 use std::option::Option;
 use chrono::{DateTime, Utc};
 
+#[derive(Debug)]
 pub struct Shelf {
     pub(crate) id: Option<i64>,
     pub(crate) name: String,

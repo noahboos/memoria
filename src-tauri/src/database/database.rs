@@ -5,6 +5,7 @@ use std::sync::Mutex;
 use tauri::{App, Manager};
 use super::version::VERSIONS;
 
+#[derive(Debug)]
 pub struct Database {
     pub(crate) connection: Mutex<Connection>,
 }

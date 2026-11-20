@@ -4,6 +4,7 @@ use crate::database::{Database, DatabaseError};
 use crate::models::shelf::Shelf;
 use crate::repositories::shelf::ShelfRepositoryError;
 
+#[derive(Debug)]
 pub struct ShelfRepository {
     database: Arc<Database>,
 }

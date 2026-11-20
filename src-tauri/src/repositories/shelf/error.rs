@@ -1,6 +1,7 @@
 use crate::database::DatabaseError;
 use crate::models::shelf::ShelfError;
 
+#[derive(Debug)]
 pub enum ShelfRepositoryError {
     DatabaseError(DatabaseError),
     ModelError(ShelfError)

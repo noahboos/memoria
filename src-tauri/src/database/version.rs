@@ -1,5 +1,6 @@
 use crate::database::migration::{Migration, ADD_SHELVES_TABLE_MIGRATION};
 
+#[derive(Debug)]
 pub(super) struct Version {
     pub(super) version: i64,
     pub(super) migrations: &'static [&'static Migration],
