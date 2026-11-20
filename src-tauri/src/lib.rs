@@ -1,9 +1,11 @@
 use std::sync::Arc;
 use tauri::{App, Manager};
 use crate::database::Database;
+use crate::repositories::shelf::ShelfRepository;
 
 mod database;
 mod models;
+mod repositories;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -12,8 +14,11 @@ pub fn run() {
         .setup(|app: &mut App| {
             let database: Database = Database::create(&app)?;
             let database: Arc<Database> = Arc::new(database);
-            app.manage(database);
-            
+            app.manage(database.clone());
+
+            let shelf_repository: ShelfRepository = ShelfRepository::new(database.clone());
+            app.manage(shelf_repository);
+
             return Ok(());
         })
         .run(tauri::generate_context!())
