@@ -1,5 +1,6 @@
-mod database;
-mod migration;
-mod version;
-
+pub(crate) mod database;
 pub use database::Database;
+
+mod migration;
+
+mod version;
