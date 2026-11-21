@@ -1,11 +1,8 @@
 <script lang="ts">
-  //
+    import {onMount} from "svelte";
+    import {goto} from "$app/navigation";
+
+    onMount(async () => {
+        await goto('/shelves/');
+    });
 </script>
-
-<main class="container">
-  <h1>Bienvenue sur Memoria, héhé.</h1>
-</main>
-
-<style>
-
-</style>
