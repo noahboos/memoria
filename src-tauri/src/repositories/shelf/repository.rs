@@ -1,8 +1,8 @@
 use std::sync::{Arc, MutexGuard};
-use chrono::{DateTime};
-use rusqlite::{params, Connection, Statement};
+use chrono::{DateTime, Utc};
+use rusqlite::{params, params_from_iter, Connection, Statement};
 use crate::database::{Database, DatabaseError};
-use crate::models::shelf::Shelf;
+use crate::models::shelf::{Shelf, ShelfError};
 use crate::repositories::shelf::ShelfRepositoryError;
 
 #[derive(Debug)]
@@ -100,5 +100,46 @@ impl ShelfRepository {
         drop(connection);
 
         return Ok(shelf);
+    }
+
+    pub fn update(&self, shelf: &Shelf) -> Result<Shelf, ShelfRepositoryError> {
+        if shelf.id.is_none() {
+            return Err(ShelfRepositoryError::ModelError(ShelfError::IdNotFound));
+        }
+
+        let mut query_parts: Vec<&str> = Vec::new();
+        let mut values: Vec<Box<dyn rusqlite::ToSql>> = Vec::new();
+
+        if let Some(name) = &shelf.name {
+            query_parts.push("name = ?");
+            values.push(Box::new(name));
+        }
+
+        query_parts.push("modified_at = ?");
+        values.push(Box::new(DateTime::timestamp(&Utc::now())));
+
+        values.push(Box::new(shelf.id));
+
+        let connection: MutexGuard<Connection> = self
+            .database
+            .connection
+            .lock()
+            .map_err(|_| DatabaseError::DatabaseLocked)?;
+
+        let mut statement: Statement = connection
+            .prepare(format!(
+                "UPDATE shelves SET {} WHERE id = ?",
+                query_parts.join(", ")
+            ).as_str())
+            .map_err(|error| DatabaseError::SQLError(error))?;
+
+        statement
+            .execute(params_from_iter(values.iter().map(|value| value.as_ref())))
+            .map_err(|error| DatabaseError::SQLError(error))?;
+
+        drop(statement);
+        drop(connection);
+
+        return self.read_one(shelf.id.unwrap());
     }
 }
