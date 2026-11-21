@@ -1,4 +1,5 @@
 use std::sync::{Arc, MutexGuard};
+use chrono::{DateTime};
 use rusqlite::{params, Connection, Statement};
 use crate::database::{Database, DatabaseError};
 use crate::models::shelf::Shelf;
@@ -14,6 +15,35 @@ impl ShelfRepository {
         return Self {
             database
         };
+    }
+
+    pub fn read_all(&self) -> Result<Vec<Shelf>, ShelfRepositoryError> {
+        let connection: MutexGuard<Connection> = self
+            .database
+            .connection
+            .lock()
+            .map_err(|error| DatabaseError::DatabaseLocked)?;
+
+        let mut statement: Statement = connection
+            .prepare("SELECT * FROM shelves")
+            .map_err(|error| DatabaseError::SQLError(error))?;
+
+        let shelves: Vec<Shelf> = statement
+            .query_map([], |row| {
+                Ok(Shelf {
+                    id: row.get(0)?,
+                    name: row.get(1)?,
+                    created_at: DateTime::from_timestamp(row.get(2)?, 0).unwrap(),
+                    modified_at: row
+                        .get::<_, Option<i64>>(3)?
+                        .and_then(|timestamp| DateTime::from_timestamp(timestamp, 0))
+                })
+            })
+            .map_err(|error| DatabaseError::SQLError(error))?
+            .collect::<Result<Vec<Shelf>, _>>()
+            .map_err(|error| DatabaseError::SQLError(error))?;
+
+        return Ok(shelves);
     }
 
     pub fn create(&self, name: &str) -> Result<Shelf, ShelfRepositoryError> {
