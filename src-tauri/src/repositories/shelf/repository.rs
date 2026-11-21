@@ -46,6 +46,34 @@ impl ShelfRepository {
         return Ok(shelves);
     }
 
+    pub fn read_one(&self, id: i64) -> Result<Shelf, ShelfRepositoryError> {
+        let connection: MutexGuard<Connection> = self
+            .database
+            .connection
+            .lock()
+            .map_err(|error| DatabaseError::DatabaseLocked)?;
+
+        let mut statement: Statement = connection
+            .prepare("SELECT * FROM shelves WHERE id = ?1")
+            .map_err(|error| DatabaseError::SQLError(error))?;
+
+        let shelf: Shelf = statement
+            .query_row(
+                [id],
+                |row| Ok(Shelf {
+                    id: row.get(0)?,
+                    name: row.get(1)?,
+                    created_at: DateTime::from_timestamp(row.get(2)?, 0).unwrap(),
+                    modified_at: row
+                        .get::<_, Option<i64>>(3)?
+                        .and_then(|timestamp| DateTime::from_timestamp(timestamp, 0))
+                })
+            )
+            .map_err(|error| DatabaseError::SQLError(error))?;
+
+        return Ok(shelf);
+    }
+
     pub fn create(&self, name: &str) -> Result<Shelf, ShelfRepositoryError> {
         let shelf: Shelf = Shelf::new(name);
 
