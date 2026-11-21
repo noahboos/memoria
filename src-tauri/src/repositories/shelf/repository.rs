@@ -29,16 +29,15 @@ impl ShelfRepository {
             .map_err(|error| DatabaseError::SQLError(error))?;
 
         let shelves: Vec<Shelf> = statement
-            .query_map([], |row| {
-                Ok(Shelf {
+            .query_map([], |row| Ok(Shelf {
                     id: row.get(0)?,
                     name: row.get(1)?,
-                    created_at: DateTime::from_timestamp(row.get(2)?, 0).unwrap(),
+                    created_at: DateTime::from_timestamp(row.get(2)?, 0),
                     modified_at: row
                         .get::<_, Option<i64>>(3)?
                         .and_then(|timestamp| DateTime::from_timestamp(timestamp, 0))
                 })
-            })
+            )
             .map_err(|error| DatabaseError::SQLError(error))?
             .collect::<Result<Vec<Shelf>, _>>()
             .map_err(|error| DatabaseError::SQLError(error))?;
@@ -63,7 +62,7 @@ impl ShelfRepository {
                 |row| Ok(Shelf {
                     id: row.get(0)?,
                     name: row.get(1)?,
-                    created_at: DateTime::from_timestamp(row.get(2)?, 0).unwrap(),
+                    created_at: DateTime::from_timestamp(row.get(2)?, 0),
                     modified_at: row
                         .get::<_, Option<i64>>(3)?
                         .and_then(|timestamp| DateTime::from_timestamp(timestamp, 0))
