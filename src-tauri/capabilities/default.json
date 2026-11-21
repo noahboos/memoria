@@ -4,6 +4,7 @@
   "description": "Capability for main and setting windows.",
   "windows": ["main", "settings"],
   "permissions": [
-    "core:default"
+    "core:default",
+    "core:window:allow-set-title"
   ]
 }
