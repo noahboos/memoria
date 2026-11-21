@@ -42,6 +42,9 @@ impl ShelfRepository {
             .collect::<Result<Vec<Shelf>, _>>()
             .map_err(|error| DatabaseError::SQLError(error))?;
 
+        drop(statement);
+        drop(connection);
+
         return Ok(shelves);
     }
 
@@ -70,6 +73,9 @@ impl ShelfRepository {
             )
             .map_err(|error| DatabaseError::SQLError(error))?;
 
+        drop(statement);
+        drop(connection);
+
         return Ok(shelf);
     }
 
@@ -89,6 +95,9 @@ impl ShelfRepository {
         statement
             .execute(params![&shelf.name])
             .map_err(|error| DatabaseError::SQLError(error))?;
+
+        drop(statement);
+        drop(connection);
 
         return Ok(shelf);
     }
