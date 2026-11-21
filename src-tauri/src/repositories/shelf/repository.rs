@@ -142,4 +142,25 @@ impl ShelfRepository {
 
         return self.read_one(shelf.id.unwrap());
     }
+
+    pub fn delete(&self, id: i64) -> Result<(), ShelfRepositoryError> {
+        let connection: MutexGuard<Connection> = self
+            .database
+            .connection
+            .lock()
+            .map_err(|_| DatabaseError::DatabaseLocked)?;
+
+        let mut statement: Statement = connection
+            .prepare("DELETE FROM shelves WHERE id = ?")
+            .map_err(|error| DatabaseError::SQLError(error))?;
+
+        statement
+            .execute(params![id])
+            .map_err(|error| DatabaseError::SQLError(error))?;
+
+        drop(statement);
+        drop(connection);
+
+        return Ok(());
+    }
 }
