@@ -3,6 +3,7 @@ use tauri::{App, Manager};
 use crate::database::Database;
 use crate::repositories::shelf::ShelfRepository;
 
+mod commands;
 mod database;
 mod models;
 mod repositories;
@@ -21,6 +22,7 @@ pub fn run() {
 
             return Ok(());
         })
+        .invoke_handler(tauri::generate_handler![commands::read_all_shelves])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
