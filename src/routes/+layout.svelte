@@ -3,10 +3,13 @@
     import type {Snippet} from "svelte";
 
     let { children }: { children: Snippet } = $props();
+
+    $effect(() => {
+        document.body.setAttribute("data-theme", "default");
+        document.body.setAttribute("data-theme-variant", "dark");
+    });
 </script>
 
-{@render children()}
-
-<style>
-
-</style>
+<div class="text-base text-base-100 bg-base-00 w-full h-screen">
+    {@render children()}
+</div>
