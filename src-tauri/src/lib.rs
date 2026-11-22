@@ -2,6 +2,7 @@ use std::sync::Arc;
 use tauri::{App, Manager};
 use crate::database::Database;
 use crate::repositories::shelf::ShelfRepository;
+use crate::repositories::stack::StackRepository;
 
 mod algorithms;
 mod commands;
@@ -20,6 +21,9 @@ pub fn run() {
 
             let shelf_repository: ShelfRepository = ShelfRepository::new(database.clone());
             app.manage(shelf_repository);
+
+            let stack_repository: StackRepository = StackRepository::new(database.clone());
+            app.manage(stack_repository);
 
             return Ok(());
         })
