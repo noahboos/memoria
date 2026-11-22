@@ -19,7 +19,6 @@
     });
 
     function close(): void {
-        console.log("close");
         toggleSaveShelfModal(false);
     }
 
