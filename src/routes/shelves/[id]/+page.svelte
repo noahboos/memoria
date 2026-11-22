@@ -79,7 +79,7 @@
             {/each}
         {:else}
             <article class="flex flex-row justify-between py-2 px-4 bg-base-25 w-2xl mx-auto rounded-md relative">
-                <p>Aucune pile n'est attaché à cette étagère.</p>
+                <p>Aucune pile n'est attachée à cette étagère.</p>
             </article>
         {/if}
     </div>
