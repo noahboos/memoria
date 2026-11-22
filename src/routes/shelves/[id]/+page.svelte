@@ -14,6 +14,7 @@
     import ListElement from "$lib/components/stacks/ListElement.svelte";
     import {showDeleteStackModalStore, toggleDeleteStackModal} from "$lib/hooks/stacks/showDeleteStackModalStore";
     import DeleteStackModal from "$lib/components/stacks/DeleteStackModal.svelte";
+    import {getCurrentWindow} from "@tauri-apps/api/window";
 
     let {params}: PageProps = $props();
 
@@ -24,6 +25,8 @@
 
     onMount(async () => {
         await refresh();
+
+        await getCurrentWindow().setTitle("Détail de l'étagère « " + shelf.name + " » | Memoria")
     });
 
     function editShelf(): void {
