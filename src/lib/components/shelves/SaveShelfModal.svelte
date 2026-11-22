@@ -15,9 +15,7 @@
     let shelf: Shelf = $state({ id: null, name: null, created_at: null, modified_at: null });
 
     onMount(async () => {
-        if (id !== null) {
-            shelf = await invoke("read_one_shelf", { id });
-        }
+        if (id !== null) shelf = await invoke("read_one_shelf", { id });
     });
 
     function close(): void {
@@ -25,7 +23,7 @@
         toggleSaveShelfModal(false);
     }
 
-    async function save() {
+    async function save(): Promise<void> {
         await invoke("save_shelf", { shelf });
         toggleSaveShelfModal(false);
         await onSave();
