@@ -40,7 +40,7 @@
     }
 </script>
 
-<main class="w-full p-4 space-y-4">
+<main class="p-4 space-y-4">
     <h1 class="font-serif text-2xl text-center">Étagères</h1>
     <div class="space-y-2">
         {#each shelves as shelf}
