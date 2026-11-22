@@ -1,0 +1,1 @@
+export type Algorithm = 'SM2' | 'FSRS';
