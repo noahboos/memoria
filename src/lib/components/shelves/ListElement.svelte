@@ -13,7 +13,7 @@
 <article class="flex flex-row justify-between bg-base-25 w-2xl mx-auto rounded-md hover:bg-accent-500/35 relative">
     <a
         class="py-2 px-4 max-w-fit underline after:content-[''] after:absolute after:inset-0"
-        href="{ "/shelf/" + shelf.id }"
+        href="{ "/shelves/" + shelf.id }"
     >{shelf.name}</a>
     <div class="mr-2">
         <button
