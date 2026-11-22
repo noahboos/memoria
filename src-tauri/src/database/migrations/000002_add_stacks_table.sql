@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS stacks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    shelf_id INTEGER DEFAULT NULL,
+    name VARCHAR(255) NOT NULL,
+    algorithm VARCHAR(255) NOT NULL,
+    created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+    modified_at INTEGER DEFAULT NULL,
+
+    FOREIGN KEY (shelf_id) REFERENCES shelves(id) ON DELETE SET NULL
+);

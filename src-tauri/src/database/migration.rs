@@ -9,3 +9,7 @@ pub(super) struct Migration {
 pub(super) const ADD_SHELVES_TABLE_MIGRATION: Migration = Migration {
     statements: include_str!("./migrations/000001_add_shelves_table.sql"),
 };
+
+pub(super) const ADD_STACKS_TABLE_MIGRATION: Migration = Migration {
+    statements: include_str!("./migrations/000002_add_stacks_table.sql"),
+};

@@ -1,4 +1,4 @@
-use crate::database::migration::{Migration, ADD_SHELVES_TABLE_MIGRATION};
+use crate::database::migration::{Migration, ADD_SHELVES_TABLE_MIGRATION, ADD_STACKS_TABLE_MIGRATION};
 
 #[derive(Debug)]
 pub(super) struct Version {
@@ -13,4 +13,10 @@ pub(super) const VERSIONS: &[Version] = &[
             &ADD_SHELVES_TABLE_MIGRATION,
         ],
     },
+    Version {
+        version: 2,
+        migrations: &[
+            &ADD_STACKS_TABLE_MIGRATION,
+        ],
+    }
 ];
