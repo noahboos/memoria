@@ -3,6 +3,7 @@ use tauri::{App, Manager};
 use crate::database::Database;
 use crate::repositories::shelf::ShelfRepository;
 
+mod algorithms;
 mod commands;
 mod database;
 mod models;
