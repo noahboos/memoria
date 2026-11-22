@@ -10,6 +10,16 @@ pub fn read_all_stacks(repository: State<StackRepository>) -> Vec<Stack> {
 }
 
 #[tauri::command]
+pub fn read_all_stacks_by_shelf_id(repository: State<StackRepository>, shelf_id: i64) -> Vec<Stack> {
+    let stacks: Vec<Stack> = repository.read_all().unwrap();
+
+    return stacks
+        .into_iter()
+        .filter(|stack| stack.shelf_id.unwrap_or(0) == shelf_id)
+        .collect();
+}
+
+#[tauri::command]
 pub fn read_one_stack(repository: State<StackRepository>, id: i64) -> Stack {
     let stack: Stack = repository.read_one(id).unwrap();
 
