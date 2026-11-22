@@ -1,7 +1,7 @@
 use std::fmt::format;
 use tauri::State;
 use crate::models::shelf::Shelf;
-use crate::repositories::shelf::ShelfRepository;
+use crate::repositories::shelf::{ShelfRepository, ShelfRepositoryError};
 
 #[tauri::command]
 pub fn read_all_shelves(repository: State<ShelfRepository>) -> Vec<Shelf> {
@@ -38,6 +38,8 @@ pub fn save_shelf(repository: State<ShelfRepository>, shelf: Shelf) -> Result<Sh
 }
 
 #[tauri::command]
-pub fn delete_shelf() {
-    //
+pub fn delete_shelf(repository: State<ShelfRepository>, id: i64) -> Result<(), String> {
+    return repository
+        .delete(id)
+        .map_err(|error| format!("Unable to delete the shelf : {error:?}"));
 }

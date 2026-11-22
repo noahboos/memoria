@@ -26,6 +26,7 @@ pub fn run() {
             commands::read_all_shelves,
             commands::read_one_shelf,
             commands::save_shelf,
+            commands::delete_shelf
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
