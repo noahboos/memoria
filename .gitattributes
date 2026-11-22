@@ -1,0 +1,2 @@
+# Exclude font-related CSS file from GitHub's language statistics
+fonts.css linguist-detectable=false
