@@ -6,6 +6,8 @@
     import ListElement from "$lib/components/shelves/ListElement.svelte";
     import {showSaveShelfModalStore, toggleSaveShelfModal} from "$lib/hooks/shelves/showSaveShelfModalStore";
     import SaveShelfModal from "$lib/components/shelves/SaveShelfModal.svelte";
+    import {showDeleteShelfModalStore, toggleDeleteShelfModal} from "$lib/hooks/shelves/showDeleteShelfModalStore";
+    import DeleteShelfModal from "$lib/components/shelves/DeleteShelfModal.svelte";
 
     let shelves: Shelf[] | null = $state(null);
     let shelfId: number | null = $state(null);
@@ -27,7 +29,12 @@
         toggleSaveShelfModal(true);
     }
 
-    async function onSave(): Promise<void> {
+    function deleteShelf(id:number): void {
+        shelfId = id;
+        toggleDeleteShelfModal(true);
+    }
+
+    async function refresh(): Promise<void> {
         shelfId = null;
         shelves = await invoke('read_all_shelves');
     }
@@ -37,7 +44,7 @@
     <h1 class="font-serif text-2xl text-center">Étagères</h1>
     <div class="space-y-2">
         {#each shelves as shelf}
-            <ListElement {shelf} onEdit={editShelf} />
+            <ListElement {shelf} onEdit={editShelf} onDelete={deleteShelf} />
         {/each}
     </div>
     <button
@@ -46,5 +53,8 @@
     >Créer une nouvelle étagère</button>
 </main>
 {#if $showSaveShelfModalStore}
-    <SaveShelfModal id={shelfId} onSave={onSave} />
+    <SaveShelfModal id={shelfId} onSave={refresh} />
+{/if}
+{#if $showDeleteShelfModalStore}
+    <DeleteShelfModal id={shelfId} onDelete={refresh} />
 {/if}
