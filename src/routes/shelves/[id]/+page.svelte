@@ -12,6 +12,8 @@
     import {showSaveStackModalStore, toggleSaveStackModal} from "$lib/hooks/stacks/showSaveStackModalStore";
     import SaveStackModal from "$lib/components/stacks/SaveStackModal.svelte";
     import ListElement from "$lib/components/stacks/ListElement.svelte";
+    import {showDeleteStackModalStore, toggleDeleteStackModal} from "$lib/hooks/stacks/showDeleteStackModalStore";
+    import DeleteStackModal from "$lib/components/stacks/DeleteStackModal.svelte";
 
     let {params}: PageProps = $props();
 
@@ -42,6 +44,11 @@
         toggleSaveStackModal(true);
     }
 
+    function deleteStack(id: number): void {
+        stackId = id;
+        toggleDeleteStackModal(true);
+    }
+
     async function refresh(): Promise<void> {
         shelf = await invoke("read_one_shelf", {id});
         stacks = await invoke("read_all_stacks_by_shelf_id", {shelfId: id});
@@ -68,7 +75,7 @@
     <div class="space-y-2">
         {#if stacks.length > 0}
             {#each stacks as stack}
-                <ListElement {stack} onEdit={editStack} onDelete={() => {}} />
+                <ListElement {stack} onEdit={editStack} onDelete={deleteStack} />
             {/each}
         {:else}
             <article class="flex flex-row justify-between py-2 px-4 bg-base-25 w-2xl mx-auto rounded-md relative">
@@ -89,4 +96,7 @@
 {/if}
 {#if $showSaveStackModalStore}
     <SaveStackModal id={stackId} shelf_id={shelf.id} onSave={refresh} />
+{/if}
+{#if $showDeleteStackModalStore}
+    <DeleteStackModal id={stackId} onDelete={refresh} />
 {/if}
