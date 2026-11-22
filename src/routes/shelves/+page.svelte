@@ -9,7 +9,7 @@
     import {showDeleteShelfModalStore, toggleDeleteShelfModal} from "$lib/hooks/shelves/showDeleteShelfModalStore";
     import DeleteShelfModal from "$lib/components/shelves/DeleteShelfModal.svelte";
 
-    let shelves: Shelf[] | null = $state(null);
+    let shelves: Shelf[] = $state([]);
     let shelfId: number | null = $state(null);
 
     onMount(async () => {
@@ -43,9 +43,15 @@
 <main class="p-4 space-y-4">
     <h1 class="font-serif text-2xl text-center">Étagères</h1>
     <div class="space-y-2">
-        {#each shelves as shelf}
-            <ListElement {shelf} onEdit={editShelf} onDelete={deleteShelf} />
-        {/each}
+        {#if shelves.length > 0}
+            {#each shelves as shelf}
+                <ListElement {shelf} onEdit={editShelf} onDelete={deleteShelf} />
+            {/each}
+        {:else}
+            <article class="flex flex-row justify-between py-2 px-4 bg-base-25 w-2xl mx-auto rounded-md relative">
+                <p>Aucune étagère n'existe.</p>
+            </article>
+        {/if}
     </div>
     <button
         class="block w-fit mx-auto bg-base-30 px-2 py-1 rounded-md hover:bg-primary-200 hover:text-base-00"
