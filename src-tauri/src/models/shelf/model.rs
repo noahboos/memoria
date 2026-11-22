@@ -1,7 +1,7 @@
 use std::option::Option;
 use chrono::{DateTime, Utc};
 
-#[derive(Debug, serde::Serialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Shelf {
     pub(crate) id: Option<i64>,
     pub(crate) name: Option<String>,

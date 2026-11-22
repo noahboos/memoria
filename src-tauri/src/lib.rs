@@ -22,7 +22,11 @@ pub fn run() {
 
             return Ok(());
         })
-        .invoke_handler(tauri::generate_handler![commands::read_all_shelves])
+        .invoke_handler(tauri::generate_handler![
+            commands::read_all_shelves,
+            commands::read_one_shelf,
+            commands::save_shelf,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
