@@ -8,6 +8,8 @@
     import SaveShelfModal from "$lib/components/shelves/SaveShelfModal.svelte";
     import {showDeleteShelfModalStore, toggleDeleteShelfModal} from "$lib/hooks/shelves/showDeleteShelfModalStore";
     import DeleteShelfModal from "$lib/components/shelves/DeleteShelfModal.svelte";
+    import {showSaveStackModalStore, toggleSaveStackModal} from "$lib/hooks/stacks/showSaveStackModalStore";
+    import SaveStackModal from "$lib/components/stacks/SaveStackModal.svelte";
 
     let shelves: Shelf[] = $state([]);
     let shelfId: number | null = $state(null);
@@ -16,7 +18,6 @@
         await getCurrentWindow().setTitle("Liste des étagères | Memoria")
 
         shelves = await invoke('read_all_shelves');
-        console.log(shelves);
     });
 
     function createShelf(): void {
@@ -32,6 +33,10 @@
     function deleteShelf(id:number): void {
         shelfId = id;
         toggleDeleteShelfModal(true);
+    }
+
+    function createStack(): void {
+        toggleSaveStackModal(true);
     }
 
     async function refresh(): Promise<void> {
@@ -53,14 +58,23 @@
             </article>
         {/if}
     </div>
-    <button
-        class="block w-fit mx-auto bg-base-30 px-2 py-1 rounded-md hover:bg-primary-200 hover:text-base-00"
-        onclick={createShelf}
-    >Créer une nouvelle étagère</button>
+    <div class="flex flex-row gap-2 justify-center">
+        <button
+            class="w-fit bg-base-30 px-2 py-1 rounded-md hover:bg-primary-200 hover:text-base-00"
+            onclick={createShelf}
+        >Créer une nouvelle étagère</button>
+        <button
+            class="w-fit bg-base-30 px-2 py-1 rounded-md hover:bg-primary-200 hover:text-base-00"
+            onclick={createStack}
+        >Créer une nouvelle pile</button>
+    </div>
 </main>
 {#if $showSaveShelfModalStore}
     <SaveShelfModal id={shelfId} onSave={refresh} />
 {/if}
 {#if $showDeleteShelfModalStore}
     <DeleteShelfModal id={shelfId} onDelete={refresh} />
+{/if}
+{#if $showSaveStackModalStore}
+    <SaveStackModal id={null} onSave={async () => {}} />
 {/if}
