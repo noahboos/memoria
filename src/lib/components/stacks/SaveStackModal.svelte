@@ -5,6 +5,7 @@
     import {toggleSaveStackModal} from "$lib/stores/stacks/showSaveStackModalStore";
     import {X} from "@lucide/svelte";
     import type {Shelf} from "$lib/types/Shelf";
+    import {refreshIsStackWithoutShelfIdExistingStore} from "$lib/stores/stacks/isStackWithoutShelfIdExistingStore";
 
     interface Props {
         id: number | null,
@@ -29,6 +30,7 @@
     async function save(): Promise<void> {
         await invoke("save_stack", { stack });
         toggleSaveStackModal(false);
+        await refreshIsStackWithoutShelfIdExistingStore();
         await onSave();
     }
 </script>

@@ -13,23 +13,20 @@
     import type {Writable} from "svelte/store";
     import {InteractedShelfStore} from "$lib/stores/shelves/InteractedShelfStore";
     import {InteractedStackStore} from "$lib/stores/stacks/InteractedStackStore";
+    import {isStackWithoutShelfIdExistingStore} from "$lib/stores/stacks/isStackWithoutShelfIdExistingStore";
 
     let shelves: Shelf[] = $state([]);
     const interactedShelfIdStore: Writable<number | null> = InteractedShelfStore.idStore;
-
-    let isStackWithoutShelfIdExisting: boolean = $state(false);
 
     onMount(async () => {
         await getCurrentWindow().setTitle("Liste des étagères | Memoria")
 
         shelves = await invoke('read_all_shelves');
-        isStackWithoutShelfIdExisting = await invoke("is_stack_without_shelf_id_existing");
     });
 
     async function refresh(): Promise<void> {
         $interactedShelfIdStore = null;
         shelves = await invoke('read_all_shelves');
-        isStackWithoutShelfIdExisting = await invoke("is_stack_without_shelf_id_existing");
     }
 </script>
 
@@ -44,7 +41,7 @@
                     onDelete={() => InteractedShelfStore.displayDeleteModal(shelf.id ?? 0)}
                 />
             {/each}
-            {#if isStackWithoutShelfIdExisting}
+            {#if $isStackWithoutShelfIdExistingStore}
                 <article class="flex flex-row justify-between bg-base-25 w-2xl mx-auto rounded-md hover:bg-accent-500/35 relative">
                     <a
                         class="py-2 px-4 max-w-fit underline after:content-[''] after:absolute after:inset-0"

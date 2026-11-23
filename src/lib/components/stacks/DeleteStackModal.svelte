@@ -4,6 +4,7 @@
     import type {Stack} from "$lib/types/Stack";
     import { X } from "@lucide/svelte";
     import {toggleDeleteStackModal} from "$lib/stores/stacks/showDeleteStackModalStore";
+    import {refreshIsStackWithoutShelfIdExistingStore} from "$lib/stores/stacks/isStackWithoutShelfIdExistingStore";
 
     interface Props {
         id: number | null,
@@ -25,6 +26,7 @@
     async function trash(): Promise<void> {
         await invoke("delete_stack", {id});
         toggleDeleteStackModal(false);
+        await refreshIsStackWithoutShelfIdExistingStore();
         await onDelete();
     }
 </script>
