@@ -45,9 +45,6 @@ impl StackRepository {
             .collect::<Result<Vec<Stack>, _>>()
             .map_err(|error| DatabaseError::SQLError(error))?;
 
-        drop(statement);
-        drop(connection);
-
         return Ok(stacks);
     }
 
@@ -78,33 +75,29 @@ impl StackRepository {
             )
             .map_err(|error| DatabaseError::SQLError(error))?;
 
-        drop(statement);
-        drop(connection);
-
         return Ok(stack);
     }
 
     pub fn create(&self, stack: &Stack) -> Result<Stack, StackRepositoryError> {
         let algorithm: &Algorithm = stack.algorithm.as_ref().unwrap_or(&Algorithm::SM2);
 
-        let connection: MutexGuard<Connection> = self
-            .database
-            .connection
-            .lock()
-            .map_err(|_| DatabaseError::DatabaseLocked)?;
+        let id = {
+            let connection: MutexGuard<Connection> = self
+                .database
+                .connection
+                .lock()
+                .map_err(|_| DatabaseError::DatabaseLocked)?;
 
-        let mut statement: Statement = connection
-            .prepare("INSERT INTO stacks (shelf_id, name, algorithm) VALUES (?1, ?2, ?3);")
-            .map_err(|error| DatabaseError::SQLError(error))?;
+            let mut statement: Statement = connection
+                .prepare("INSERT INTO stacks (shelf_id, name, algorithm) VALUES (?1, ?2, ?3);")
+                .map_err(|error| DatabaseError::SQLError(error))?;
 
-        statement
-            .execute(params![&stack.shelf_id, &stack.name, algorithm.get_name()])
-            .map_err(|error| DatabaseError::SQLError(error))?;
+            statement
+                .execute(params![&stack.shelf_id, &stack.name, algorithm.get_name()])
+                .map_err(|error| DatabaseError::SQLError(error))?;
 
-        let id: i64 = connection.last_insert_rowid();
-
-        drop(statement);
-        drop(connection);
+            connection.last_insert_rowid()
+        };
 
         let updated_stack: Stack = self.read_one(id)?;
 
@@ -138,26 +131,25 @@ impl StackRepository {
         values.push(Box::new(DateTime::timestamp(&Utc::now())));
 
         values.push(Box::new(stack.id));
+        
+        {
+            let connection: MutexGuard<Connection> = self
+                .database
+                .connection
+                .lock()
+                .map_err(|_| DatabaseError::DatabaseLocked)?;
 
-        let connection: MutexGuard<Connection> = self
-            .database
-            .connection
-            .lock()
-            .map_err(|_| DatabaseError::DatabaseLocked)?;
+            let mut statement: Statement = connection
+                .prepare(format!(
+                    "UPDATE stacks SET {} WHERE id = ?",
+                    query_parts.join(", ")
+                ).as_str())
+                .map_err(|error| DatabaseError::SQLError(error))?;
 
-        let mut statement: Statement = connection
-            .prepare(format!(
-                "UPDATE stacks SET {} WHERE id = ?",
-                query_parts.join(", ")
-            ).as_str())
-            .map_err(|error| DatabaseError::SQLError(error))?;
-
-        statement
-            .execute(params_from_iter(values.iter().map(|value| value.as_ref())))
-            .map_err(|error| DatabaseError::SQLError(error))?;
-
-        drop(statement);
-        drop(connection);
+            statement
+                .execute(params_from_iter(values.iter().map(|value| value.as_ref())))
+                .map_err(|error| DatabaseError::SQLError(error))?;
+        };
 
         return self.read_one(stack.id.unwrap());
     }
@@ -176,9 +168,6 @@ impl StackRepository {
         statement
             .execute(params![id])
             .map_err(|error| DatabaseError::SQLError(error))?;
-
-        drop(statement);
-        drop(connection);
 
         return Ok(());
     }

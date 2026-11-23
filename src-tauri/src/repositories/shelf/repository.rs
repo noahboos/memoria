@@ -42,9 +42,6 @@ impl ShelfRepository {
             .collect::<Result<Vec<Shelf>, _>>()
             .map_err(|error| DatabaseError::SQLError(error))?;
 
-        drop(statement);
-        drop(connection);
-
         return Ok(shelves);
     }
 
@@ -73,9 +70,6 @@ impl ShelfRepository {
             )
             .map_err(|error| DatabaseError::SQLError(error))?;
 
-        drop(statement);
-        drop(connection);
-
         return Ok(shelf);
     }
 
@@ -95,9 +89,6 @@ impl ShelfRepository {
         statement
             .execute(params![&shelf.name])
             .map_err(|error| DatabaseError::SQLError(error))?;
-
-        drop(statement);
-        drop(connection);
 
         return Ok(shelf);
     }
@@ -120,25 +111,22 @@ impl ShelfRepository {
 
         values.push(Box::new(shelf.id));
 
-        let connection: MutexGuard<Connection> = self
-            .database
-            .connection
-            .lock()
-            .map_err(|_| DatabaseError::DatabaseLocked)?;
+        {   let connection: MutexGuard<Connection> = self
+                    .database
+                    .connection
+                    .lock()
+                    .map_err(|_| DatabaseError::DatabaseLocked)?;
 
-        let mut statement: Statement = connection
-            .prepare(format!(
-                "UPDATE shelves SET {} WHERE id = ?",
-                query_parts.join(", ")
-            ).as_str())
-            .map_err(|error| DatabaseError::SQLError(error))?;
+            let mut statement: Statement = connection
+                .prepare(format!(
+                    "UPDATE shelves SET {} WHERE id = ?",
+                    query_parts.join(", ")
+                ).as_str())
+                .map_err(|error| DatabaseError::SQLError(error))?;
 
-        statement
-            .execute(params_from_iter(values.iter().map(|value| value.as_ref())))
-            .map_err(|error| DatabaseError::SQLError(error))?;
-
-        drop(statement);
-        drop(connection);
+            statement
+                .execute(params_from_iter(values.iter().map(|value| value.as_ref())))
+                .map_err(|error| DatabaseError::SQLError(error))?; };
 
         return self.read_one(shelf.id.unwrap());
     }
@@ -156,10 +144,8 @@ impl ShelfRepository {
 
         statement
             .execute(params![id])
-            .map_err(|error| DatabaseError::SQLError(error))?;
+            .map_err(|error| DatabaseError::SQLError(error));
 
-        drop(statement);
-        drop(connection);
 
         return Ok(());
     }
