@@ -35,6 +35,7 @@ pub fn run() {
             commands::read_all_stacks,
             commands::read_all_stacks_by_shelf_id,
             commands::read_all_stacks_without_shelf_id,
+            commands::is_stack_without_shelf_id_existing,
             commands::read_one_stack,
             commands::save_stack,
             commands::delete_stack

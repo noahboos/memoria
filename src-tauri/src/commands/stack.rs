@@ -22,11 +22,24 @@ pub fn read_all_stacks_by_shelf_id(repository: State<StackRepository>, shelf_id:
 #[tauri::command]
 pub fn read_all_stacks_without_shelf_id(repository: State<StackRepository>) -> Vec<Stack> {
     let stacks: Vec<Stack> = repository.read_all().unwrap();
-    
+
     return stacks
         .into_iter()
         .filter(|stack| stack.shelf_id.is_none())
         .collect();
+}
+
+#[tauri::command]
+pub fn is_stack_without_shelf_id_existing(repository: State<StackRepository>) -> Result<bool, String> {
+    let stacks: Vec<Stack> = repository.read_all().unwrap();
+
+    for stack in stacks {
+        if stack.shelf_id.is_none() {
+            return Ok(true);
+        }
+    };
+
+    return Ok(false);
 }
 
 #[tauri::command]
