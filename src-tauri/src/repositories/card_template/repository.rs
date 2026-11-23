@@ -1,8 +1,8 @@
 use std::sync::{Arc, MutexGuard};
-use chrono::DateTime;
-use rusqlite::{params, Connection, Statement};
+use chrono::{DateTime, Utc};
+use rusqlite::{params, params_from_iter, Connection, Statement};
 use crate::database::{Database, DatabaseError};
-use crate::models::card_template::CardTemplate;
+use crate::models::card_template::{CardTemplate, CardTemplateError};
 use crate::repositories::card_template::error::CardTemplateRepositoryError;
 
 #[derive(Debug)]
@@ -75,10 +75,6 @@ impl CardTemplateRepository {
         return Ok(card_template);
     }
 
-    // pub fn update(&self, card_template: &CardTemplate) -> Result<CardTemplate, CardTemplateRepositoryError> {
-    //     //
-    // }
-    //
     pub fn create(&self, card_template: &CardTemplate) -> Result<CardTemplate, CardTemplateRepositoryError> {
         let id: i64 = {
             let connection: MutexGuard<Connection> = self
@@ -101,6 +97,56 @@ impl CardTemplateRepository {
         let updated_card_template: CardTemplate = self.read_one(id)?;
 
         return Ok(updated_card_template);
+    }
+
+    pub fn update(&self, card_template: &CardTemplate) -> Result<CardTemplate, CardTemplateRepositoryError> {
+        if card_template.id.is_none() {
+            return Err(CardTemplateRepositoryError::ModelError(CardTemplateError::IdNotFound));
+        }
+        
+        let mut query_parts: Vec<&str> = Vec::new();
+        let mut values: Vec<Box<dyn rusqlite::ToSql>> = Vec::new();
+        
+        if let Some(note_template_id) = &card_template.note_template_id {
+            query_parts.push("note_template_id = ?");
+            values.push(Box::new(note_template_id));
+        }
+        
+        if let Some(name) = &card_template.name {
+            query_parts.push("name = ?");
+            values.push(Box::new(name));
+        }
+        
+        if let Some(markup) = &card_template.markup {
+            query_parts.push("markup = ?");
+            values.push(Box::new(markup));
+        }
+        
+        query_parts.push("modified_at = ?");
+        values.push(Box::new(DateTime::timestamp(&Utc::now())));
+        
+        values.push(Box::new(card_template.id));
+
+        {
+            let connection: MutexGuard<Connection> = self
+                .database
+                .connection
+                .lock()
+                .map_err(|_| DatabaseError::DatabaseLocked)?;
+
+            let mut statement: Statement = connection
+                .prepare(format!(
+                    "UPDATE card_templates SET {} WHERE id = ?",
+                    query_parts.join(", ")
+                ).as_str())
+                .map_err(|error| DatabaseError::SQLError(error))?;
+            
+            statement
+                .execute(params_from_iter(values.iter().map(|value| value.as_ref())))
+                .map_err(|error| DatabaseError::SQLError(error))?;
+        };
+        
+        return self.read_one(card_template.id.unwrap());
     }
 
     pub fn delete(&self, id: i64) -> Result<(), CardTemplateRepositoryError> {
