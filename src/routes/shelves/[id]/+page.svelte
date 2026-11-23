@@ -3,9 +3,9 @@
     import {invoke} from "@tauri-apps/api/core";
     import type {Shelf} from "$lib/types/Shelf";
     import type {PageProps} from "../../../../.svelte-kit/types/src/routes/shelves/[id]/$types";
-    import {showDeleteShelfModalStore, toggleDeleteShelfModal} from "$lib/stores/shelves/showDeleteShelfModalStore";
+    import {showDeleteShelfModalStore} from "$lib/stores/shelves/showDeleteShelfModalStore";
     import DeleteShelfModal from "$lib/components/shelves/DeleteShelfModal.svelte";
-    import {showSaveShelfModalStore, toggleSaveShelfModal} from "$lib/stores/shelves/showSaveShelfModalStore";
+    import {showSaveShelfModalStore} from "$lib/stores/shelves/showSaveShelfModalStore";
     import SaveShelfModal from "$lib/components/shelves/SaveShelfModal.svelte";
     import {goto} from "$app/navigation";
     import type {Stack} from "$lib/types/Stack";
@@ -17,6 +17,7 @@
     import {getCurrentWindow} from "@tauri-apps/api/window";
     import {InteractedStackStore} from "$lib/stores/stacks/InteractedStackStore";
     import type {Writable} from "svelte/store";
+    import {InteractedShelfStore} from "$lib/stores/shelves/InteractedShelfStore";
 
     let {params}: PageProps = $props();
 
@@ -31,14 +32,6 @@
         if (id > 0) await getCurrentWindow().setTitle("Détail de l'étagère « " + shelf.name + " » | Memoria");
         else await getCurrentWindow().setTitle("Détail des piles flottantes | Memoria");
     });
-
-    function editShelf(): void {
-        toggleSaveShelfModal(true);
-    }
-
-    function deleteShelf(): void {
-        toggleDeleteShelfModal(true);
-    }
 
     async function refresh(): Promise<void> {
         if (id > 0) {
@@ -60,11 +53,11 @@
         <div class="flex flex-row gap-2 justify-center">
             <button
                 class="block w-fit bg-base-30 px-2 py-1 rounded-md hover:bg-primary-200 hover:text-base-00"
-                onclick={editShelf}
+                onclick={() => InteractedShelfStore.displaySaveModal(id)}
             >Modifier</button>
             <button
                 class="block w-fit bg-base-30 px-2 py-1 rounded-md hover:bg-primary-200 hover:text-base-00"
-                onclick={deleteShelf}
+                onclick={() => InteractedShelfStore.displayDeleteModal(id)}
             >Supprimer</button>
         </div>
     {/if}

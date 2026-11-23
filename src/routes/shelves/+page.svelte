@@ -4,15 +4,18 @@
     import type {Shelf} from "$lib/types/Shelf";
     import {getCurrentWindow} from "@tauri-apps/api/window";
     import ListElement from "$lib/components/shelves/ListElement.svelte";
-    import {showSaveShelfModalStore, toggleSaveShelfModal} from "$lib/stores/shelves/showSaveShelfModalStore";
+    import {showSaveShelfModalStore} from "$lib/stores/shelves/showSaveShelfModalStore";
     import SaveShelfModal from "$lib/components/shelves/SaveShelfModal.svelte";
-    import {showDeleteShelfModalStore, toggleDeleteShelfModal} from "$lib/stores/shelves/showDeleteShelfModalStore";
+    import {showDeleteShelfModalStore} from "$lib/stores/shelves/showDeleteShelfModalStore";
     import DeleteShelfModal from "$lib/components/shelves/DeleteShelfModal.svelte";
-    import {showSaveStackModalStore, toggleSaveStackModal} from "$lib/stores/stacks/showSaveStackModalStore";
+    import {showSaveStackModalStore} from "$lib/stores/stacks/showSaveStackModalStore";
     import SaveStackModal from "$lib/components/stacks/SaveStackModal.svelte";
+    import type {Writable} from "svelte/store";
+    import {InteractedShelfStore} from "$lib/stores/shelves/InteractedShelfStore";
+    import {InteractedStackStore} from "$lib/stores/stacks/InteractedStackStore";
 
     let shelves: Shelf[] = $state([]);
-    let shelfId: number | null = $state(null);
+    const interactedShelfIdStore: Writable<number | null> = InteractedShelfStore.idStore;
 
     let isStackWithoutShelfIdExisting: boolean = $state(false);
 
@@ -23,27 +26,8 @@
         isStackWithoutShelfIdExisting = await invoke("is_stack_without_shelf_id_existing");
     });
 
-    function createShelf(): void {
-        shelfId = null;
-        toggleSaveShelfModal(true);
-    }
-
-    function editShelf(id:number): void {
-        shelfId = id;
-        toggleSaveShelfModal(true);
-    }
-
-    function deleteShelf(id:number): void {
-        shelfId = id;
-        toggleDeleteShelfModal(true);
-    }
-
-    function createStack(): void {
-        toggleSaveStackModal(true);
-    }
-
     async function refresh(): Promise<void> {
-        shelfId = null;
+        $interactedShelfIdStore = null;
         shelves = await invoke('read_all_shelves');
         isStackWithoutShelfIdExisting = await invoke("is_stack_without_shelf_id_existing");
     }
@@ -54,7 +38,11 @@
     <div class="space-y-2">
         {#if shelves.length > 0}
             {#each shelves as shelf}
-                <ListElement {shelf} onEdit={editShelf} onDelete={deleteShelf} />
+                <ListElement
+                    {shelf}
+                    onEdit={() => InteractedShelfStore.displaySaveModal(shelf.id)}
+                    onDelete={() => InteractedShelfStore.displayDeleteModal(shelf.id ?? 0)}
+                />
             {/each}
             {#if isStackWithoutShelfIdExisting}
                 <article class="flex flex-row justify-between bg-base-25 w-2xl mx-auto rounded-md hover:bg-accent-500/35 relative">
@@ -73,19 +61,19 @@
     <div class="flex flex-row gap-2 justify-center">
         <button
             class="w-fit bg-base-30 px-2 py-1 rounded-md hover:bg-primary-200 hover:text-base-00"
-            onclick={createShelf}
+            onclick={() => InteractedShelfStore.displaySaveModal()}
         >Créer une nouvelle étagère</button>
         <button
             class="w-fit bg-base-30 px-2 py-1 rounded-md hover:bg-primary-200 hover:text-base-00"
-            onclick={createStack}
+            onclick={() => InteractedStackStore.displaySaveModal()}
         >Créer une nouvelle pile</button>
     </div>
 </main>
 {#if $showSaveShelfModalStore}
-    <SaveShelfModal id={shelfId} onSave={refresh} />
+    <SaveShelfModal id={$interactedShelfIdStore} onSave={refresh} />
 {/if}
 {#if $showDeleteShelfModalStore}
-    <DeleteShelfModal id={shelfId} onDelete={refresh} />
+    <DeleteShelfModal id={$interactedShelfIdStore} onDelete={refresh} />
 {/if}
 {#if $showSaveStackModalStore}
     <SaveStackModal id={null} shelf_id={null} onSave={refresh} />
