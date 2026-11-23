@@ -81,7 +81,7 @@ impl StackRepository {
     pub fn create(&self, stack: &Stack) -> Result<Stack, StackRepositoryError> {
         let algorithm: &Algorithm = stack.algorithm.as_ref().unwrap_or(&Algorithm::SM2);
 
-        let id = {
+        let id: i64 = {
             let connection: MutexGuard<Connection> = self
                 .database
                 .connection

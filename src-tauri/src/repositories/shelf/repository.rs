@@ -111,7 +111,8 @@ impl ShelfRepository {
 
         values.push(Box::new(shelf.id));
 
-        {   let connection: MutexGuard<Connection> = self
+        {
+            let connection: MutexGuard<Connection> = self
                     .database
                     .connection
                     .lock()
@@ -126,7 +127,8 @@ impl ShelfRepository {
 
             statement
                 .execute(params_from_iter(values.iter().map(|value| value.as_ref())))
-                .map_err(|error| DatabaseError::SQLError(error))?; };
+                .map_err(|error| DatabaseError::SQLError(error))?;
+        };
 
         return self.read_one(shelf.id.unwrap());
     }
@@ -145,7 +147,6 @@ impl ShelfRepository {
         statement
             .execute(params![id])
             .map_err(|error| DatabaseError::SQLError(error));
-
 
         return Ok(());
     }
