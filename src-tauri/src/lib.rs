@@ -1,6 +1,8 @@
 use std::sync::Arc;
 use tauri::{App, Manager};
 use crate::database::Database;
+use crate::repositories::card_template::repository::CardTemplateRepository;
+use crate::repositories::note_template::repository::NoteTemplateRepository;
 use crate::repositories::shelf::ShelfRepository;
 use crate::repositories::stack::StackRepository;
 
@@ -18,6 +20,12 @@ pub fn run() {
             let database: Database = Database::create(&app)?;
             let database: Arc<Database> = Arc::new(database);
             app.manage(database.clone());
+
+            let card_template_repository: CardTemplateRepository = CardTemplateRepository::new(database.clone());
+            app.manage(card_template_repository);
+
+            let note_template_repository: NoteTemplateRepository = NoteTemplateRepository::new(database.clone());
+            app.manage(note_template_repository);
 
             let shelf_repository: ShelfRepository = ShelfRepository::new(database.clone());
             app.manage(shelf_repository);
