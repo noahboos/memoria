@@ -1,6 +1,13 @@
 <script lang="ts">
-    //
-import {isStackWithoutShelfIdExistingStore} from "$lib/stores/stacks/isStackWithoutShelfIdExistingStore";
+    import {
+        isStackWithoutShelfIdExistingStore,
+        refreshIsStackWithoutShelfIdExistingStore
+    } from "$lib/stores/stacks/isStackWithoutShelfIdExistingStore";
+    import {onMount} from "svelte";
+
+    onMount(async () => {
+        await refreshIsStackWithoutShelfIdExistingStore();
+    });
 </script>
 
 <aside class="px-4 py-2 space-y-4 space-x-1">
