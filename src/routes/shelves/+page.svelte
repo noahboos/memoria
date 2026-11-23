@@ -14,10 +14,13 @@
     let shelves: Shelf[] = $state([]);
     let shelfId: number | null = $state(null);
 
+    let isStackWithoutShelfIdExisting: boolean = $state(false);
+
     onMount(async () => {
         await getCurrentWindow().setTitle("Liste des étagères | Memoria")
 
         shelves = await invoke('read_all_shelves');
+        isStackWithoutShelfIdExisting = await invoke("is_stack_without_shelf_id_existing");
     });
 
     function createShelf(): void {
@@ -42,6 +45,7 @@
     async function refresh(): Promise<void> {
         shelfId = null;
         shelves = await invoke('read_all_shelves');
+        isStackWithoutShelfIdExisting = await invoke("is_stack_without_shelf_id_existing");
     }
 </script>
 
@@ -52,6 +56,14 @@
             {#each shelves as shelf}
                 <ListElement {shelf} onEdit={editShelf} onDelete={deleteShelf} />
             {/each}
+            {#if isStackWithoutShelfIdExisting}
+                <article class="flex flex-row justify-between bg-base-25 w-2xl mx-auto rounded-md hover:bg-accent-500/35 relative">
+                    <a
+                        class="py-2 px-4 max-w-fit underline after:content-[''] after:absolute after:inset-0"
+                        href="{ "/shelves/" + 0 }"
+                    >Piles flottantes</a>
+                </article>
+            {/if}
         {:else}
             <article class="flex flex-row justify-between py-2 px-4 bg-base-25 w-2xl mx-auto rounded-md relative">
                 <p>Aucune étagère n'existe.</p>
