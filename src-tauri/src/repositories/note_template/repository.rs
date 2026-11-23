@@ -1,6 +1,8 @@
-use std::sync::Arc;
-use crate::database::Database;
-use crate::models::note_template::NoteTemplate;
+use std::sync::{Arc, MutexGuard};
+use chrono::{DateTime, Utc};
+use rusqlite::{params, params_from_iter, Connection, Statement};
+use crate::database::{Database, DatabaseError};
+use crate::models::note_template::{NoteTemplate, NoteTemplateError};
 use crate::repositories::note_template::error::NoteTemplateRepositoryError;
 
 #[derive(Debug)]
@@ -150,7 +152,21 @@ impl NoteTemplateRepository {
         return self.read_one(note_template.id.unwrap());
     }
 
-    // pub fn delete(&self, id: i64) -> Result<(), NoteTemplateRepositoryError> {
-    //     //
-    // }
+    pub fn delete(&self, id: i64) -> Result<(), NoteTemplateRepositoryError> {
+        let connection: MutexGuard<Connection> = self
+            .database
+            .connection
+            .lock()
+            .map_err(|_| DatabaseError::DatabaseLocked)?;
+
+        let mut statement: Statement = connection
+            .prepare("DELETE FROM note_templates WHERE id = ?")
+            .map_err(|error| DatabaseError::SQLError(error))?;
+
+        statement
+            .execute(params![id])
+            .map_err(|error| DatabaseError::SQLError(error))?;
+
+        return Ok(());
+    }
 }
