@@ -75,10 +75,30 @@ impl NoteTemplateRepository {
         return Ok(note_template);
     }
 
-    // pub fn create(&self, note_template: &NoteTemplate) -> Result<NoteTemplate, NoteTemplateRepositoryError> {
-    //     //
-    // }
-    //
+    pub fn create(&self, note_template: &NoteTemplate) -> Result<NoteTemplate, NoteTemplateRepositoryError> {
+        let id: i64 = {
+            let connection: MutexGuard<Connection> = self
+                .database
+                .connection
+                .lock()
+                .map_err(|_| DatabaseError::DatabaseLocked)?;
+
+            let mut statement: Statement = connection
+                .prepare("INSERT INTO note_templates (name, description, data) VALUES (?1, ?2, ?3);")
+                .map_err(|error| DatabaseError::SQLError(error))?;
+
+            statement
+                .execute(params![&note_template.name, &note_template.description, &note_template.data])
+                .map_err(|error| DatabaseError::SQLError(error))?;
+
+            connection.last_insert_rowid()
+        };
+
+        let updated_note_template: NoteTemplate = self.read_one(id)?;
+
+        return Ok(updated_note_template);
+    }
+
     // pub fn update(&self, note_template: &NoteTemplate) -> Result<NoteTemplate, NoteTemplateRepositoryError> {
     //     //
     // }
