@@ -3,7 +3,7 @@
     import {onMount} from "svelte";
     import type {Stack} from "$lib/types/Stack";
     import { X } from "@lucide/svelte";
-    import {toggleDeleteStackModal} from "$lib/hooks/stacks/showDeleteStackModalStore";
+    import {toggleDeleteStackModal} from "$lib/stores/stacks/showDeleteStackModalStore";
 
     interface Props {
         id: number | null,

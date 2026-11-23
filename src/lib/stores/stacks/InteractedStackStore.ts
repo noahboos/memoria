@@ -1,6 +1,6 @@
 import {writable, type Writable} from "svelte/store";
-import {toggleSaveStackModal} from "$lib/hooks/stacks/showSaveStackModalStore";
-import {toggleDeleteStackModal} from "$lib/hooks/stacks/showDeleteStackModalStore";
+import {toggleSaveStackModal} from "$lib/stores/stacks/showSaveStackModalStore";
+import {toggleDeleteStackModal} from "$lib/stores/stacks/showDeleteStackModalStore";
 
 export class InteractedStackStore {
     static idStore: Writable<number | null> = writable(null);

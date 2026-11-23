@@ -4,12 +4,12 @@
     import {onMount} from "svelte";
     import {invoke} from "@tauri-apps/api/core";
     import {getCurrentWindow} from "@tauri-apps/api/window";
-    import {showSaveStackModalStore} from "$lib/hooks/stacks/showSaveStackModalStore";
-    import {showDeleteStackModalStore} from "$lib/hooks/stacks/showDeleteStackModalStore";
+    import {showSaveStackModalStore} from "$lib/stores/stacks/showSaveStackModalStore";
+    import {showDeleteStackModalStore} from "$lib/stores/stacks/showDeleteStackModalStore";
     import DeleteStackModal from "$lib/components/stacks/DeleteStackModal.svelte";
     import SaveStackModal from "$lib/components/stacks/SaveStackModal.svelte";
     import {goto} from "$app/navigation";
-    import {InteractedStackStore} from "$lib/hooks/stacks/InteractedStackStore";
+    import {InteractedStackStore} from "$lib/stores/stacks/InteractedStackStore";
     import type {Writable} from "svelte/store";
 
     let {params}: PageProps = $props();

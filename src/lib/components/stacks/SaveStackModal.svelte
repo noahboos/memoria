@@ -2,7 +2,7 @@
     import type {Stack} from "$lib/types/Stack";
     import {onMount} from "svelte";
     import {invoke} from "@tauri-apps/api/core";
-    import {toggleSaveStackModal} from "$lib/hooks/stacks/showSaveStackModalStore";
+    import {toggleSaveStackModal} from "$lib/stores/stacks/showSaveStackModalStore";
     import {X} from "@lucide/svelte";
     import type {Shelf} from "$lib/types/Shelf";
 

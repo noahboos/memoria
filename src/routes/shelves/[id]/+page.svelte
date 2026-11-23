@@ -3,19 +3,19 @@
     import {invoke} from "@tauri-apps/api/core";
     import type {Shelf} from "$lib/types/Shelf";
     import type {PageProps} from "../../../../.svelte-kit/types/src/routes/shelves/[id]/$types";
-    import {showDeleteShelfModalStore, toggleDeleteShelfModal} from "$lib/hooks/shelves/showDeleteShelfModalStore";
+    import {showDeleteShelfModalStore, toggleDeleteShelfModal} from "$lib/stores/shelves/showDeleteShelfModalStore";
     import DeleteShelfModal from "$lib/components/shelves/DeleteShelfModal.svelte";
-    import {showSaveShelfModalStore, toggleSaveShelfModal} from "$lib/hooks/shelves/showSaveShelfModalStore";
+    import {showSaveShelfModalStore, toggleSaveShelfModal} from "$lib/stores/shelves/showSaveShelfModalStore";
     import SaveShelfModal from "$lib/components/shelves/SaveShelfModal.svelte";
     import {goto} from "$app/navigation";
     import type {Stack} from "$lib/types/Stack";
-    import {showSaveStackModalStore} from "$lib/hooks/stacks/showSaveStackModalStore";
+    import {showSaveStackModalStore} from "$lib/stores/stacks/showSaveStackModalStore";
     import SaveStackModal from "$lib/components/stacks/SaveStackModal.svelte";
     import ListElement from "$lib/components/stacks/ListElement.svelte";
-    import {showDeleteStackModalStore} from "$lib/hooks/stacks/showDeleteStackModalStore";
+    import {showDeleteStackModalStore} from "$lib/stores/stacks/showDeleteStackModalStore";
     import DeleteStackModal from "$lib/components/stacks/DeleteStackModal.svelte";
     import {getCurrentWindow} from "@tauri-apps/api/window";
-    import {InteractedStackStore} from "$lib/hooks/stacks/InteractedStackStore";
+    import {InteractedStackStore} from "$lib/stores/stacks/InteractedStackStore";
     import type {Writable} from "svelte/store";
 
     let {params}: PageProps = $props();

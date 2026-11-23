@@ -3,7 +3,7 @@
     import {onMount} from "svelte";
     import type {Shelf} from "$lib/types/Shelf";
     import { X } from "@lucide/svelte";
-    import {toggleDeleteShelfModal} from "$lib/hooks/shelves/showDeleteShelfModalStore";
+    import {toggleDeleteShelfModal} from "$lib/stores/shelves/showDeleteShelfModalStore";
 
     interface Props {
         id: number | null,

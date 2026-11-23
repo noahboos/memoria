@@ -4,11 +4,11 @@
     import type {Shelf} from "$lib/types/Shelf";
     import {getCurrentWindow} from "@tauri-apps/api/window";
     import ListElement from "$lib/components/shelves/ListElement.svelte";
-    import {showSaveShelfModalStore, toggleSaveShelfModal} from "$lib/hooks/shelves/showSaveShelfModalStore";
+    import {showSaveShelfModalStore, toggleSaveShelfModal} from "$lib/stores/shelves/showSaveShelfModalStore";
     import SaveShelfModal from "$lib/components/shelves/SaveShelfModal.svelte";
-    import {showDeleteShelfModalStore, toggleDeleteShelfModal} from "$lib/hooks/shelves/showDeleteShelfModalStore";
+    import {showDeleteShelfModalStore, toggleDeleteShelfModal} from "$lib/stores/shelves/showDeleteShelfModalStore";
     import DeleteShelfModal from "$lib/components/shelves/DeleteShelfModal.svelte";
-    import {showSaveStackModalStore, toggleSaveStackModal} from "$lib/hooks/stacks/showSaveStackModalStore";
+    import {showSaveStackModalStore, toggleSaveStackModal} from "$lib/stores/stacks/showSaveStackModalStore";
     import SaveStackModal from "$lib/components/stacks/SaveStackModal.svelte";
 
     let shelves: Shelf[] = $state([]);

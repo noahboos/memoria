@@ -2,7 +2,7 @@
     import type {Shelf} from "$lib/types/Shelf";
     import {onMount} from "svelte";
     import {invoke} from "@tauri-apps/api/core";
-    import {toggleSaveShelfModal} from "$lib/hooks/shelves/showSaveShelfModalStore";
+    import {toggleSaveShelfModal} from "$lib/stores/shelves/showSaveShelfModalStore";
     import { X } from "@lucide/svelte";
 
     interface Props {
