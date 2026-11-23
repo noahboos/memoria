@@ -75,14 +75,34 @@ impl CardTemplateRepository {
         return Ok(card_template);
     }
 
-    // pub fn create(&self, card_template: &CardTemplate) -> Result<CardTemplate, CardTemplateRepositoryError> {
-    //     //
-    // }
-    //
     // pub fn update(&self, card_template: &CardTemplate) -> Result<CardTemplate, CardTemplateRepositoryError> {
     //     //
     // }
     //
+    pub fn create(&self, card_template: &CardTemplate) -> Result<CardTemplate, CardTemplateRepositoryError> {
+        let id: i64 = {
+            let connection: MutexGuard<Connection> = self
+                .database
+                .connection
+                .lock()
+                .map_err(|_| DatabaseError::DatabaseLocked)?;
+
+            let mut statement: Statement = connection
+                .prepare("INSERT INTO card_templates (note_template_id, name, markup) VALUES (?1, ?2, ?3);")
+                .map_err(|error| DatabaseError::SQLError(error))?;
+
+            statement
+                .execute(params![&card_template.note_template_id, &card_template.name, &card_template.markup])
+                .map_err(|error| DatabaseError::SQLError(error))?;
+
+            connection.last_insert_rowid()
+        };
+
+        let updated_card_template: CardTemplate = self.read_one(id)?;
+
+        return Ok(updated_card_template);
+    }
+
     pub fn delete(&self, id: i64) -> Result<(), CardTemplateRepositoryError> {
         let connection: MutexGuard<Connection> = self
             .database
