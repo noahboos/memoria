@@ -26,7 +26,8 @@
     onMount(async () => {
         await refresh();
 
-        await getCurrentWindow().setTitle("Détail de l'étagère « " + shelf.name + " » | Memoria")
+        if (id > 0) await getCurrentWindow().setTitle("Détail de l'étagère « " + shelf.name + " » | Memoria");
+        else await getCurrentWindow().setTitle("Détail des piles flottantes | Memoria");
     });
 
     function editShelf(): void {
@@ -53,8 +54,12 @@
     }
 
     async function refresh(): Promise<void> {
-        shelf = await invoke("read_one_shelf", {id});
-        stacks = await invoke("read_all_stacks_by_shelf_id", {shelfId: id});
+        if (id > 0) {
+            shelf = await invoke("read_one_shelf", {id});
+            stacks = await invoke("read_all_stacks_by_shelf_id", {shelfId: id});
+        } else {
+            stacks = await invoke("read_all_stacks_without_shelf_id");
+        }
     }
 
     async function onDelete(): Promise<void> {
@@ -63,17 +68,19 @@
 </script>
 
 <main class="p-4 space-y-4">
-    <h1 class="font-serif text-2xl text-center">{shelf.name}</h1>
-    <div class="flex flex-row gap-2 justify-center">
-        <button
-            class="block w-fit bg-base-30 px-2 py-1 rounded-md hover:bg-primary-200 hover:text-base-00"
-            onclick={editShelf}
-        >Modifier</button>
-        <button
-            class="block w-fit bg-base-30 px-2 py-1 rounded-md hover:bg-primary-200 hover:text-base-00"
-            onclick={deleteShelf}
-        >Supprimer</button>
-    </div>
+    <h1 class="font-serif text-2xl text-center">{shelf.name ?? "Piles flottantes"}</h1>
+    {#if id > 0}
+        <div class="flex flex-row gap-2 justify-center">
+            <button
+                class="block w-fit bg-base-30 px-2 py-1 rounded-md hover:bg-primary-200 hover:text-base-00"
+                onclick={editShelf}
+            >Modifier</button>
+            <button
+                class="block w-fit bg-base-30 px-2 py-1 rounded-md hover:bg-primary-200 hover:text-base-00"
+                onclick={deleteShelf}
+            >Supprimer</button>
+        </div>
+    {/if}
     <h2 class="font-serif text-xl text-center">Piles</h2>
     <div class="space-y-2">
         {#if stacks.length > 0}
@@ -82,7 +89,11 @@
             {/each}
         {:else}
             <article class="flex flex-row justify-between py-2 px-4 bg-base-25 w-2xl mx-auto rounded-md relative">
-                <p>Aucune pile n'est attachée à cette étagère.</p>
+                {#if id > 0}
+                    <p>Aucune pile n'est attachée à cette étagère.</p>
+                {:else}
+                    <p>Aucune pile flottante n'existe.</p>
+                {/if}
             </article>
         {/if}
     </div>
