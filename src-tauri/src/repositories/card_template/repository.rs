@@ -59,7 +59,9 @@ impl CardTemplateRepository {
             .map_err(|error| DatabaseError::SQLError(error))?;
 
         let card_template: CardTemplate = statement
-            .query_row([], |row| Ok(CardTemplate {
+            .query_row(
+                [id],
+                |row| Ok(CardTemplate {
                     id: row.get("id")?,
                     note_template_id: row.get("note_template_id")?,
                     name: row.get("name")?,
@@ -103,28 +105,28 @@ impl CardTemplateRepository {
         if card_template.id.is_none() {
             return Err(CardTemplateRepositoryError::ModelError(CardTemplateError::IdNotFound));
         }
-        
+
         let mut query_parts: Vec<&str> = Vec::new();
         let mut values: Vec<Box<dyn rusqlite::ToSql>> = Vec::new();
-        
+
         if let Some(note_template_id) = &card_template.note_template_id {
             query_parts.push("note_template_id = ?");
             values.push(Box::new(note_template_id));
         }
-        
+
         if let Some(name) = &card_template.name {
             query_parts.push("name = ?");
             values.push(Box::new(name));
         }
-        
+
         if let Some(markup) = &card_template.markup {
             query_parts.push("markup = ?");
             values.push(Box::new(markup));
         }
-        
+
         query_parts.push("modified_at = ?");
         values.push(Box::new(DateTime::timestamp(&Utc::now())));
-        
+
         values.push(Box::new(card_template.id));
 
         {
@@ -140,12 +142,12 @@ impl CardTemplateRepository {
                     query_parts.join(", ")
                 ).as_str())
                 .map_err(|error| DatabaseError::SQLError(error))?;
-            
+
             statement
                 .execute(params_from_iter(values.iter().map(|value| value.as_ref())))
                 .map_err(|error| DatabaseError::SQLError(error))?;
         };
-        
+
         return self.read_one(card_template.id.unwrap());
     }
 
