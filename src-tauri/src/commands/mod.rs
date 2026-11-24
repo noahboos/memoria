@@ -1,3 +1,6 @@
+mod note_template;
+pub(crate) use note_template::*;
+
 mod shelf;
 pub(crate) use shelf::*;
 
