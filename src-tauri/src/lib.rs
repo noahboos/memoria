@@ -36,6 +36,11 @@ pub fn run() {
             return Ok(());
         })
         .invoke_handler(tauri::generate_handler![
+            commands::read_all_card_templates,
+            commands::read_all_card_templates_by_note_template_id,
+            commands::read_one_card_template,
+            commands::save_card_template,
+            commands::delete_card_template,
             commands::read_all_note_templates,
             commands::read_one_note_template,
             commands::save_note_template,
