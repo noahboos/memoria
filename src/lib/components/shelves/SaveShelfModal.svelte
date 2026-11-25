@@ -4,13 +4,16 @@
     import {invoke} from "@tauri-apps/api/core";
     import {toggleSaveShelfModal} from "$lib/stores/shelves/showSaveShelfModalStore";
     import { X } from "@lucide/svelte";
+    import {get} from "svelte/store";
+    import {InteractedShelfStore} from "$lib/stores/shelves/InteractedShelfStore";
 
     interface Props {
-        id: number | null,
         onSave: () => Promise<void>,
     }
 
-    let {id, onSave}: Props = $props();
+    let {onSave}: Props = $props();
+
+    let id: number | null = get(InteractedShelfStore.idStore);
 
     let shelf: Shelf = $state({ id: null, name: null, created_at: null, modified_at: null });
 

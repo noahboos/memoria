@@ -5,13 +5,16 @@
     import { X } from "@lucide/svelte";
     import {toggleDeleteStackModal} from "$lib/stores/stacks/showDeleteStackModalStore";
     import {refreshIsStackWithoutShelfIdExistingStore} from "$lib/stores/stacks/isStackWithoutShelfIdExistingStore";
+    import {InteractedStackStore} from "$lib/stores/stacks/InteractedStackStore";
+    import {get} from "svelte/store";
 
     interface Props {
-        id: number | null,
         onDelete: () => Promise<void>,
     }
 
-    let {id, onDelete}: Props = $props();
+    let {onDelete}: Props = $props();
+
+    let id: number | null = get(InteractedStackStore.idStore);
 
     let stack: Stack = $state({ id: null, shelf_id: null, name: null, algorithm: null, created_at: null, modified_at: null });
 

@@ -52,8 +52,8 @@
     </div>
 </main>
 {#if $showSaveStackModalStore}
-    <SaveStackModal id={$interactedStackIdStore} shelf_id={stack.shelf_id} onSave={refresh} />
+    <SaveStackModal shelf_id={stack.shelf_id} onSave={refresh} />
 {/if}
 {#if $showDeleteStackModalStore}
-    <DeleteStackModal id={$interactedStackIdStore} onDelete={onDelete} />
+    <DeleteStackModal onDelete={onDelete} />
 {/if}

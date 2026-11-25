@@ -6,14 +6,17 @@
     import {X} from "@lucide/svelte";
     import type {Shelf} from "$lib/types/Shelf";
     import {refreshIsStackWithoutShelfIdExistingStore} from "$lib/stores/stacks/isStackWithoutShelfIdExistingStore";
+    import {get} from "svelte/store";
+    import {InteractedStackStore} from "$lib/stores/stacks/InteractedStackStore";
 
     interface Props {
-        id: number | null,
         shelf_id: number | null,
         onSave: () => Promise<void>,
     }
 
-    let {id, shelf_id, onSave}: Props = $props();
+    let {shelf_id, onSave}: Props = $props()
+
+    let id: number | null = get(InteractedStackStore.idStore);
 
     let shelves: Shelf[] = $state([]);
     let stack: Stack = $state({ id, shelf_id, name: null, algorithm: "SM2", created_at: null, modified_at: null });

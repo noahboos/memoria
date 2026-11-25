@@ -16,7 +16,6 @@
     import DeleteStackModal from "$lib/components/stacks/DeleteStackModal.svelte";
     import {getCurrentWindow} from "@tauri-apps/api/window";
     import {InteractedStackStore} from "$lib/stores/stacks/InteractedStackStore";
-    import type {Writable} from "svelte/store";
     import {InteractedShelfStore} from "$lib/stores/shelves/InteractedShelfStore";
 
     let {params}: PageProps = $props();
@@ -24,7 +23,6 @@
     const id: number = Number(params.id);
     let shelf: Shelf = $state({ id: null, name: null, created_at: null, modified_at: null });
     let stacks: Stack[] = $state([]);
-    const interactedStackIdStore: Writable<number | null> = InteractedStackStore.idStore;
 
     onMount(async () => {
         await refresh();
@@ -87,14 +85,14 @@
     >Créer une nouvelle pile</button>
 </main>
 {#if $showSaveShelfModalStore}
-    <SaveShelfModal {id} onSave={refresh} />
+    <SaveShelfModal onSave={refresh} />
 {/if}
 {#if $showDeleteShelfModalStore}
-    <DeleteShelfModal {id} onDelete={onDelete} />
+    <DeleteShelfModal onDelete={onDelete} />
 {/if}
 {#if $showSaveStackModalStore}
-    <SaveStackModal id={$interactedStackIdStore} shelf_id={shelf.id} onSave={refresh} />
+    <SaveStackModal shelf_id={shelf.id} onSave={refresh} />
 {/if}
 {#if $showDeleteStackModalStore}
-    <DeleteStackModal id={$interactedStackIdStore} onDelete={refresh} />
+    <DeleteStackModal onDelete={refresh} />
 {/if}

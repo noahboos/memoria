@@ -10,13 +10,11 @@
     import DeleteShelfModal from "$lib/components/shelves/DeleteShelfModal.svelte";
     import {showSaveStackModalStore} from "$lib/stores/stacks/showSaveStackModalStore";
     import SaveStackModal from "$lib/components/stacks/SaveStackModal.svelte";
-    import type {Writable} from "svelte/store";
     import {InteractedShelfStore} from "$lib/stores/shelves/InteractedShelfStore";
     import {InteractedStackStore} from "$lib/stores/stacks/InteractedStackStore";
     import {isStackWithoutShelfIdExistingStore} from "$lib/stores/stacks/isStackWithoutShelfIdExistingStore";
 
     let shelves: Shelf[] = $state([]);
-    const interactedShelfIdStore: Writable<number | null> = InteractedShelfStore.idStore;
 
     onMount(async () => {
         await getCurrentWindow().setTitle("Liste des étagères | Memoria")
@@ -25,7 +23,7 @@
     });
 
     async function refresh(): Promise<void> {
-        $interactedShelfIdStore = null;
+        InteractedShelfStore.idStore.set(null);
         shelves = await invoke('read_all_shelves');
     }
 </script>
@@ -67,11 +65,11 @@
     </div>
 </main>
 {#if $showSaveShelfModalStore}
-    <SaveShelfModal id={$interactedShelfIdStore} onSave={refresh} />
+    <SaveShelfModal onSave={refresh} />
 {/if}
 {#if $showDeleteShelfModalStore}
-    <DeleteShelfModal id={$interactedShelfIdStore} onDelete={refresh} />
+    <DeleteShelfModal onDelete={refresh} />
 {/if}
 {#if $showSaveStackModalStore}
-    <SaveStackModal id={null} shelf_id={null} onSave={refresh} />
+    <SaveStackModal shelf_id={null} onSave={refresh} />
 {/if}

@@ -4,13 +4,16 @@
     import type {Shelf} from "$lib/types/Shelf";
     import { X } from "@lucide/svelte";
     import {toggleDeleteShelfModal} from "$lib/stores/shelves/showDeleteShelfModalStore";
+    import {get} from "svelte/store";
+    import {InteractedShelfStore} from "$lib/stores/shelves/InteractedShelfStore";
 
     interface Props {
-        id: number | null,
         onDelete: () => Promise<void>,
     }
 
-    let {id, onDelete}: Props = $props();
+    let {onDelete}: Props = $props();
+
+    let id: number | null = get(InteractedShelfStore.idStore);
 
     let shelf: Shelf = $state({ id: null, name: null, created_at: null, modified_at: null });
 
