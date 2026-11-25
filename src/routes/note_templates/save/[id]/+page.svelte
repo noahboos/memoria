@@ -17,12 +17,15 @@
     // let card_templates: CardTemplate[] = [];
 
     onMount(async() => {
-        await getCurrentWindow().setTitle("Sauvegarder un modèle de note | Memoria");
-
         if (id > 0) {
             note_template = await invoke("read_one_note_template", {id});
+
+            fields = note_template.data ? JSON.parse(note_template.data) : [];
+
             // card_templates = await invoke("read_all_card_templates_by_note_template_id", {id});
-        }
+
+            await getCurrentWindow().setTitle("Mettre à jour le modèle de note « " + note_template.name + " » | Memoria");
+        } else await getCurrentWindow().setTitle("Créer un modèle de note | Memoria");
     });
 
     function addField(): void {
