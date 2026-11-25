@@ -11,7 +11,7 @@
     });
 </script>
 
-<div class="text-base text-base-100 bg-base-00 w-full h-screen">
+<div class="text-base text-base-100 bg-base-00 w-full min-h-screen h-fit">
     <Toolbar />
     {@render children()}
 </div>
