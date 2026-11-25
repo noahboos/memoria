@@ -3,6 +3,7 @@
     import {getCurrentWindow} from "@tauri-apps/api/window";
     import {onMount} from "svelte";
     import {invoke} from "@tauri-apps/api/core";
+    import ListElement from "$lib/components/note_templates/ListElement.svelte";
 
     let note_templates: NoteTemplate[] = $state([]);
 
@@ -15,13 +16,19 @@
     async function refresh(): Promise<void> {
         note_templates = await invoke("read_all_note_templates");
     }
+
+    async function onDelete() {
+        //
+    }
 </script>
 
 <main class="p-4 space-y-4">
     <h1 class="font-serif text-2xl text-center">Modèles de note</h1>
     <div class="space-y-2">
         {#if note_templates.length > 0}
-            <!--  TODO - Implemented the `note_templates/ListElement` component.  -->
+            {#each note_templates as note_template}
+                <ListElement {note_template} onDelete={onDelete} />
+            {/each}
         {:else}
             <article class="flex flex-row justify-between py-2 px-4 bg-base-25 w-2xl mx-auto rounded-md relative">
                 <p>Aucun modèle de note n'existe.</p>
