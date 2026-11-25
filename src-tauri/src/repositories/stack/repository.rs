@@ -112,10 +112,8 @@ impl StackRepository {
         let mut query_parts: Vec<&str> = Vec::new();
         let mut values: Vec<Box<dyn rusqlite::ToSql>> = Vec::new();
 
-        if let Some(shelf_id) = &stack.shelf_id {
-            query_parts.push("shelf_id = ?");
-            values.push(Box::new(shelf_id));
-        }
+        query_parts.push("shelf_id = ?");
+        values.push(Box::new(&stack.shelf_id));
 
         if let Some(name) = &stack.name {
             query_parts.push("name = ?");
