@@ -4,6 +4,9 @@
     import {onMount} from "svelte";
     import {invoke} from "@tauri-apps/api/core";
     import ListElement from "$lib/components/note_templates/ListElement.svelte";
+    import {showDeleteNoteTemplateModalStore} from "$lib/stores/note_templates/showDeleteNoteTemplateModalStore";
+    import DeleteNoteTemplateModal from "$lib/components/note_templates/DeleteNoteTemplateModal.svelte";
+    import {InteractedNoteTemplateStore} from "$lib/stores/note_templates/InteractedNoteTemplateStore";
 
     let note_templates: NoteTemplate[] = $state([]);
 
@@ -16,10 +19,6 @@
     async function refresh(): Promise<void> {
         note_templates = await invoke("read_all_note_templates");
     }
-
-    async function onDelete() {
-        //
-    }
 </script>
 
 <main class="p-4 space-y-4">
@@ -27,7 +26,10 @@
     <div class="space-y-2">
         {#if note_templates.length > 0}
             {#each note_templates as note_template}
-                <ListElement {note_template} onDelete={onDelete} />
+                <ListElement
+                    {note_template}
+                    onDelete={() => InteractedNoteTemplateStore.displayDeleteModal(note_template.id ?? 0)}
+                />
             {/each}
         {:else}
             <article class="flex flex-row justify-between py-2 px-4 bg-base-25 w-2xl mx-auto rounded-md relative">
@@ -40,3 +42,7 @@
         href="/note_templates/save/0"
     >Créer un nouveau modèle de note</a>
 </main>
+
+{#if $showDeleteNoteTemplateModalStore}
+    <DeleteNoteTemplateModal onDelete={refresh} />
+{/if}
