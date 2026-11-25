@@ -71,5 +71,5 @@
     <DeleteShelfModal onDelete={refresh} />
 {/if}
 {#if $showSaveStackModalStore}
-    <SaveStackModal shelf_id={null} onSave={refresh} />
+    <SaveStackModal onSave={refresh} />
 {/if}

@@ -52,7 +52,7 @@
     </div>
 </main>
 {#if $showSaveStackModalStore}
-    <SaveStackModal shelf_id={stack.shelf_id} onSave={refresh} />
+    <SaveStackModal onSave={refresh} />
 {/if}
 {#if $showDeleteStackModalStore}
     <DeleteStackModal onDelete={onDelete} />

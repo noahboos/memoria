@@ -10,20 +10,21 @@
     import {InteractedStackStore} from "$lib/stores/stacks/InteractedStackStore";
 
     interface Props {
-        shelf_id: number | null,
         onSave: () => Promise<void>,
     }
 
-    let {shelf_id, onSave}: Props = $props()
+    let {onSave}: Props = $props()
 
     let id: number | null = get(InteractedStackStore.idStore);
 
     let shelves: Shelf[] = $state([]);
-    let stack: Stack = $state({ id, shelf_id, name: null, algorithm: "SM2", created_at: null, modified_at: null });
+    let stack: Stack = $state({ id, shelf_id: null, name: null, algorithm: "SM2", created_at: null, modified_at: null });
 
     onMount(async () => {
         shelves = await invoke("read_all_shelves");
-        if (id !== null) stack = await invoke("read_one_stack", { id });
+        if (id !== null) {
+            stack = await invoke("read_one_stack", {id});
+        }
     });
 
     function close(): void {
