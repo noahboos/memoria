@@ -36,9 +36,9 @@
     async function save(): Promise<void> {
         note_template.data = JSON.stringify(fields);
 
-        await invoke("save_note_template", { noteTemplate: note_template});
+        let _note_template: NoteTemplate = await invoke("save_note_template", { noteTemplate: note_template});
 
-        await goto("/note_templates/");
+        await goto("/note_templates/" + _note_template.id);
     }
 </script>
 
