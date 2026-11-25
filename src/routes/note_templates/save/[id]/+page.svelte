@@ -3,7 +3,6 @@
     import {getCurrentWindow} from "@tauri-apps/api/window";
     import type {PageProps} from "../../../../../.svelte-kit/types/src/routes/note_templates/save/[id]/$types";
     import type {NoteTemplate} from "$lib/types/NoteTemplate";
-    import type {CardTemplate} from "$lib/types/CardTemplate";
     import {invoke} from "@tauri-apps/api/core";
     import type {NoteTemplateField} from "$lib/types/NoteTemplateField";
     import FieldInputGroup from "$lib/components/note_templates/FieldInputGroup.svelte";
@@ -14,15 +13,12 @@
     let id = Number(params.id);
     let note_template: NoteTemplate = $state<NoteTemplate>({id: null, name: null, description: null, data: null, created_at: null, modified_at: null });
     let fields: NoteTemplateField[] = $state([]);
-    // let card_templates: CardTemplate[] = [];
 
     onMount(async() => {
         if (id > 0) {
             note_template = await invoke("read_one_note_template", {id});
 
             fields = note_template.data ? JSON.parse(note_template.data) : [];
-
-            // card_templates = await invoke("read_all_card_templates_by_note_template_id", {id});
 
             await getCurrentWindow().setTitle("Mettre à jour le modèle de note « " + note_template.name + " » | Memoria");
         } else await getCurrentWindow().setTitle("Créer un modèle de note | Memoria");
@@ -40,7 +36,7 @@
     async function save(): Promise<void> {
         note_template.data = JSON.stringify(fields);
 
-        let _note_template = await invoke("save_note_template", { noteTemplate: note_template});
+        await invoke("save_note_template", { noteTemplate: note_template});
 
         await goto("/note_templates/");
     }
