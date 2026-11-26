@@ -37,6 +37,10 @@
             onclick={() => InteractedNoteTemplateStore.displayDeleteModal(id)}
         >Supprimer</button>
     </div>
+    <a
+        class="block w-fit mx-auto bg-base-30 px-2 py-1 underline rounded-md hover:bg-primary-200 hover:text-base-00"
+        href={"/card_templates/save/0?note_template_id=" + id}
+    >Créer un nouveau modèle de carte</a>
 </main>
 
 {#if $showDeleteNoteTemplateModalStore}
