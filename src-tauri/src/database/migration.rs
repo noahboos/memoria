@@ -21,3 +21,7 @@ pub(super) const ADD_NOTE_TEMPLATES_TABLE_MIGRATION: Migration = Migration {
 pub(super) const ADD_CARD_TEMPLATES_TABLE_MIGRATION: Migration = Migration {
     statements: include_str!("./migrations/000004_add_card_templates_table.sql"),
 };
+
+pub(super) const SPLIT_MARKUP_ATTRIBUTE_INTO_FRONT_MARKUP_AND_BACK_MARKUP_ATTRIBUTES_IN_CARD_TEMPLATES_TABLE_MIGRATION: Migration = Migration {
+    statements: include_str!("./migrations/000005_split_markup_attribute_into_front_markup_and_back_markup_attributes_in_card_templates_table.sql"),
+};

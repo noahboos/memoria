@@ -33,7 +33,8 @@ impl CardTemplateRepository {
                     id: row.get("id")?,
                     note_template_id: row.get("note_template_id")?,
                     name: row.get("name")?,
-                    markup: row.get("markup")?,
+                    front_markup: row.get("front_markup")?,
+                    back_markup: row.get("back_markup")?,
                     created_at: DateTime::from_timestamp(row.get("created_at")?, 0),
                     modified_at: row
                         .get::<_, Option<i64>>("modified_at")?
@@ -65,7 +66,8 @@ impl CardTemplateRepository {
                     id: row.get("id")?,
                     note_template_id: row.get("note_template_id")?,
                     name: row.get("name")?,
-                    markup: row.get("markup")?,
+                    front_markup: row.get("front_markup")?,
+                    back_markup: row.get("back_markup")?,
                     created_at: DateTime::from_timestamp(row.get("created_at")?, 0),
                     modified_at: row
                         .get::<_, Option<i64>>("modified_at")?
@@ -86,11 +88,11 @@ impl CardTemplateRepository {
                 .map_err(|_| DatabaseError::DatabaseLocked)?;
 
             let mut statement: Statement = connection
-                .prepare("INSERT INTO card_templates (note_template_id, name, markup) VALUES (?1, ?2, ?3);")
+                .prepare("INSERT INTO card_templates (note_template_id, name, front_markup, back_markup) VALUES (?1, ?2, ?3, ?4);")
                 .map_err(|error| DatabaseError::SQLError(error))?;
 
             statement
-                .execute(params![&card_template.note_template_id, &card_template.name, &card_template.markup])
+                .execute(params![&card_template.note_template_id, &card_template.name, &card_template.front_markup, &card_template.back_markup])
                 .map_err(|error| DatabaseError::SQLError(error))?;
 
             connection.last_insert_rowid()
@@ -119,9 +121,14 @@ impl CardTemplateRepository {
             values.push(Box::new(name));
         }
 
-        if let Some(markup) = &card_template.markup {
-            query_parts.push("markup = ?");
-            values.push(Box::new(markup));
+        if let Some(front_markup) = &card_template.front_markup {
+            query_parts.push("front_markup = ?");
+            values.push(Box::new(front_markup));
+        }
+
+        if let Some(back_markup) = &card_template.back_markup {
+            query_parts.push("back_markup = ?");
+            values.push(Box::new(back_markup));
         }
 
         query_parts.push("modified_at = ?");
