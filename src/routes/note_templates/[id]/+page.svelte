@@ -8,6 +8,7 @@
     import {showDeleteNoteTemplateModalStore} from "$lib/stores/note_templates/showDeleteNoteTemplateModalStore";
     import {goto} from "$app/navigation";
     import {InteractedNoteTemplateStore} from "$lib/stores/note_templates/InteractedNoteTemplateStore";
+    import ListElement from "$lib/components/card_templates/ListElement.svelte";
 
     let {params}: PageProps = $props();
 
@@ -37,6 +38,10 @@
             onclick={() => InteractedNoteTemplateStore.displayDeleteModal(id)}
         >Supprimer</button>
     </div>
+    <p class="font-serif text-xl text-center">Modèles de carte</p>
+    {#each card_templates as card_template}
+        <ListElement card_template={card_template} onDelete={() => {}} />
+    {/each}
     <a
         class="block w-fit mx-auto bg-base-30 px-2 py-1 underline rounded-md hover:bg-primary-200 hover:text-base-00"
         href={"/card_templates/save/0?note_template_id=" + id}
