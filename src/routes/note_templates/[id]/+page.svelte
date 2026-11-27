@@ -9,6 +9,9 @@
     import {goto} from "$app/navigation";
     import {InteractedNoteTemplateStore} from "$lib/stores/note_templates/InteractedNoteTemplateStore";
     import ListElement from "$lib/components/card_templates/ListElement.svelte";
+    import {InteractedCardTemplateStore} from "$lib/stores/card_templates/InteractedCardTemplateStore";
+    import DeleteCardTemplateModal from "$lib/components/card_templates/DeleteCardTemplateModal.svelte";
+    import {showDeleteCardTemplateModalStore} from "$lib/stores/card_templates/showDeleteCardTemplateModalStore";
 
     let {params}: PageProps = $props();
 
@@ -18,8 +21,12 @@
 
     onMount(async () => {
         note_template = await invoke("read_one_note_template", {id});
-        card_templates = await invoke("read_all_card_templates_by_note_template_id", { noteTemplateId: id});
+        await refreshCardTemplates();
     });
+
+    async function refreshCardTemplates(): Promise<void> {
+        card_templates = await invoke("read_all_card_templates_by_note_template_id", { noteTemplateId: id });
+    }
 
     function onDelete(): void {
         goto("/note_templates/");
@@ -40,7 +47,7 @@
     </div>
     <p class="font-serif text-xl text-center">Modèles de carte</p>
     {#each card_templates as card_template}
-        <ListElement card_template={card_template} onDelete={() => {}} />
+        <ListElement card_template={card_template} onDelete={() => InteractedCardTemplateStore.displayDeleteModal(card_template.id ?? 0)} />
     {/each}
     <a
         class="block w-fit mx-auto bg-base-30 px-2 py-1 underline rounded-md hover:bg-primary-200 hover:text-base-00"
@@ -50,4 +57,7 @@
 
 {#if $showDeleteNoteTemplateModalStore}
     <DeleteNoteTemplateModal onDelete={async () => onDelete()} />
+{/if}
+{#if $showDeleteCardTemplateModalStore}
+    <DeleteCardTemplateModal onDelete={async () => refreshCardTemplates()} />
 {/if}
