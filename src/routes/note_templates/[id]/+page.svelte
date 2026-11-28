@@ -46,9 +46,15 @@
         >Supprimer</button>
     </div>
     <p class="font-serif text-xl text-center">Modèles de carte</p>
-    {#each card_templates as card_template}
-        <ListElement card_template={card_template} onDelete={() => InteractedCardTemplateStore.displayDeleteModal(card_template.id ?? 0)} />
-    {/each}
+    {#if card_templates.length > 0}
+        {#each card_templates as card_template}
+            <ListElement card_template={card_template} onDelete={() => InteractedCardTemplateStore.displayDeleteModal(card_template.id ?? 0)} />
+        {/each}
+    {:else}
+        <article class="flex flex-row justify-between py-2 px-4 bg-base-25 w-2xl mx-auto rounded-md relative">
+            <p>Aucun modèle de carte n'est attachée à ce modèle de note.</p>
+        </article>
+    {/if}
     <a
         class="block w-fit mx-auto bg-base-30 px-2 py-1 underline rounded-md hover:bg-primary-200 hover:text-base-00"
         href={"/card_templates/save/0?note_template_id=" + id}
